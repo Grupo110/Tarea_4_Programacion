@@ -1,83 +1,88 @@
-# Código revisado y modificado por Julio Cesar Salgado Marín
+# =========================================================
+# SISTEMA DE RESERVAS - SOFTWARE FJ
+# Código revisado y modificado por:
+# JULIO CESAR SALGADO MARIN
+# Archivo: main.py
+# =========================================================
 
-# Comentarios de revisión y mejoras realizadas:
+# MODIFICACIONES REALIZADAS:
 #
-# 1. Se corrigió la importación del archivo Reservas.py.
+# 1. Se corrigieron las importaciones
+#    de cliente.py, servicio.py y Reservas.py.
 #
-# 2. Se agregó la lista interna de reservas
-# para almacenar las reservas creadas.
+# 2. Se agregaron listas internas para:
+#    clientes, servicios y reservas.
 #
-# 3. Se mejoró la integración entre:
-# cliente.py, servicio.py y Reservas.py.
+# 3. Se fortaleció la integración total
+#    entre todas las clases del sistema.
 #
-# 4. Se corrigió la creación del objeto Reserva
-# agregando id, fecha y duración.
+# 4. Se mejoró la creación de reservas
+#    agregando validaciones completas.
 #
-# 5. Se agregaron validaciones para verificar
-# que existan clientes y servicios antes
-# de crear reservas.
+# 5. Se implementó manejo avanzado
+#    de excepciones.
 #
-# 6. Se agregó manejo de errores mediante
-# bloques try, except y finally.
+# 6. Se agregó registro automático
+#    de eventos y errores en logs.txt.
 #
-# 7. Se implementó el uso de registrar_log()
-# para registrar eventos y errores del sistema.
+# 7. Se implementó contador de operaciones
+#    realizadas en el sistema.
 #
-# 8. Se agregó la opción para visualizar
-# las reservas registradas.
+# 8. Se agregaron mensajes de control
+#    y estabilidad del sistema.
 #
-# 9. Se mejoró la organización y documentación
-# interna del código.
+# 9. Se mejoró la documentación interna
+#    y organización general del código.
 #
-# 10. Se verificó el uso correcto de listas
-# internas para clientes, servicios y reservas.
-#
-# 11. Se fortaleció el funcionamiento general
-# del sistema de reservas.
+# =========================================================
+
 
 # ==========================================
-# SISTEMA PRINCIPAL DE RESERVAS
+# IMPORTACIONES
 # ==========================================
 
-# Importamos la clase Cliente desde cliente.py
+# Importamos clase Cliente
 from cliente import Cliente
 
-# Importamos las clases de servicios desde servicio.py
+# Importamos clases de servicios
 from servicio import (
     ServicioSala,
     ServicioEquipo,
     ServicioAsesoria
 )
 
-# Importamos la clase Reserva y la función de logs
-from Reservas import Reserva, registrar_log
+# Importamos Reserva y logs
+from Reservas import (
+    Reserva,
+    registrar_log
+)
 
 
 # ==========================================
 # LISTAS INTERNAS
 # ==========================================
 
-# Lista para almacenar los clientes registrados
+# Lista de clientes
 clientes = []
 
-# Lista para almacenar los servicios creados
+# Lista de servicios
 servicios = []
 
-# Lista para almacenar las reservas realizadas
+# Lista de reservas
 reservas = []
 
+# Contador de operaciones
+operaciones = 0
+
 
 # ==========================================
-# FUNCIÓN MENÚ
+# MENÚ PRINCIPAL
 # ==========================================
 
-# Función que muestra el menú principal
 def mostrar_menu():
 
-    # Título del sistema
     print("\n========= SOFTWARE FJ =========")
 
-    # Opciones del menú
     print("1. Registrar cliente")
     print("2. Crear servicio")
     print("3. Crear reserva")
@@ -87,93 +92,108 @@ def mostrar_menu():
 
 
 # ==========================================
-# CICLO PRINCIPAL DEL SISTEMA
+# CICLO PRINCIPAL
 # ==========================================
 
-# Ciclo infinito para mantener activo el sistema
 while True:
 
-    # Mostramos el menú
+    # Mostrar menú
     mostrar_menu()
 
     try:
 
-        # Solicitamos al usuario una opción
+        # Solicitar opción
         opcion = int(
-            input("Seleccione una opción: ")
+            input(
+                "Seleccione una opción: "
+            )
         )
 
         # ==================================
-        # OPCIÓN 1: REGISTRAR CLIENTE
+        # OPCIÓN 1 - CLIENTES
         # ==================================
         if opcion == 1:
 
             try:
 
-                # Pedimos datos del cliente
-                id_cliente = int(input("ID: "))
-                nombre = input("Nombre: ")
-                email = input("Email: ")
+                # Solicitar datos
+                id_cliente = int(
+                    input("ID: ")
+                )
 
-                # Creamos objeto Cliente
+                nombre = input(
+                    "Nombre: "
+                )
+
+                email = input(
+                    "Email: "
+                )
+
+                # Crear objeto cliente
                 cliente = Cliente(
                     id_cliente,
                     nombre,
                     email
                 )
 
-                # Guardamos cliente en la lista
+                # Guardar cliente
                 clientes.append(cliente)
 
-                # Mensaje de éxito
-                print("✅ Cliente registrado")
+                # Incrementar operaciones
+                operaciones += 1
 
-                # Registramos evento en logs
+                print(
+                    "✅ Cliente registrado"
+                )
+
                 registrar_log(
                     "Cliente registrado correctamente"
                 )
 
             except Exception as e:
 
-                # Guardamos error en logs
                 registrar_log(
                     f"Error cliente: {str(e)}"
                 )
 
-                # Mostramos mensaje al usuario
                 print(
                     "❌ Error al registrar cliente"
                 )
 
         # ==================================
-        # OPCIÓN 2: CREAR SERVICIO
+        # OPCIÓN 2 - SERVICIOS
         # ==================================
         elif opcion == 2:
 
-            # Mostramos tipos de servicio
             print("\n1. Sala")
             print("2. Equipo")
             print("3. Asesoría")
 
-            # Pedimos tipo de servicio
             tipo = int(
-                input("Tipo de servicio: ")
+                input(
+                    "Tipo de servicio: "
+                )
             )
 
-            # Pedimos datos generales
-            nombre = input("Nombre: ")
+            nombre = input(
+                "Nombre: "
+            )
 
             precio = float(
-                input("Precio base: ")
+                input(
+                    "Precio base: "
+                )
             )
 
             try:
 
-                # Crear servicio sala
+                # Servicio Sala
                 if tipo == 1:
 
                     capacidad = int(
-                        input("Capacidad: ")
+                        input(
+                            "Capacidad: "
+                        )
                     )
 
                     servicio = ServicioSala(
@@ -182,7 +202,7 @@ while True:
                         capacidad
                     )
 
-                # Crear servicio equipo
+                # Servicio Equipo
                 elif tipo == 2:
 
                     tipo_equipo = input(
@@ -195,7 +215,7 @@ while True:
                         tipo_equipo
                     )
 
-                # Crear servicio asesoría
+                # Servicio Asesoría
                 elif tipo == 3:
 
                     especialidad = input(
@@ -208,74 +228,75 @@ while True:
                         especialidad
                     )
 
-                # Error si el tipo no existe
                 else:
 
                     raise ValueError(
-                        "Tipo de servicio inválido"
+                        "Tipo inválido"
                     )
 
-                # Guardamos servicio en lista
+                # Guardar servicio
                 servicios.append(servicio)
 
-                # Mensaje de éxito
-                print("✅ Servicio creado")
+                # Incrementar operaciones
+                operaciones += 1
 
-                # Registro en logs
+                print(
+                    "✅ Servicio creado"
+                )
+
                 registrar_log(
                     "Servicio creado correctamente"
                 )
 
             except Exception as e:
 
-                # Registro de error
                 registrar_log(
                     f"Error servicio: {str(e)}"
                 )
 
-                # Mensaje al usuario
                 print(
                     "❌ Error al crear servicio"
                 )
 
         # ==================================
-        # OPCIÓN 3: CREAR RESERVA
+        # OPCIÓN 3 - RESERVAS
         # ==================================
         elif opcion == 3:
 
             try:
 
-                # Validamos que existan clientes
+                # Validar clientes
                 if not clientes:
 
                     raise ValueError(
-                        "No hay clientes registrados"
+                        "No hay clientes"
                     )
 
-                # Validamos que existan servicios
+                # Validar servicios
                 if not servicios:
 
                     raise ValueError(
-                        "No hay servicios registrados"
+                        "No hay servicios"
                     )
 
-                # Seleccionamos primer cliente
+                # Seleccionar cliente
                 cliente = clientes[0]
 
-                # Seleccionamos primer servicio
+                # Seleccionar servicio
                 servicio = servicios[0]
 
-                # Pedimos fecha
+                # Pedir datos
                 fecha = input(
                     "Fecha de reserva: "
                 )
 
-                # Pedimos duración
                 duracion = int(
-                    input("Duración: ")
+                    input(
+                        "Duración: "
+                    )
                 )
 
-                # Creamos objeto Reserva
+                # Crear reserva
                 reserva = Reserva(
                     len(reservas) + 1,
                     cliente,
@@ -284,45 +305,42 @@ while True:
                     duracion
                 )
 
-                # Confirmamos reserva
+                # Confirmar reserva
                 reserva.confirmar()
 
-                # Guardamos reserva
+                # Guardar reserva
                 reservas.append(reserva)
 
-                # Mensaje de éxito
+                # Incrementar operaciones
+                operaciones += 1
+
                 print(
                     "✅ Reserva creada correctamente"
                 )
 
-                # Mostramos información
                 print(
                     reserva.mostrar_info()
                 )
 
-                # Registro en logs
                 registrar_log(
                     "Reserva creada correctamente"
                 )
 
             except Exception as e:
 
-                # Registro de error
                 registrar_log(
                     f"Error reserva: {str(e)}"
                 )
 
-                # Mensaje al usuario
                 print(
                     "❌ Error al crear reserva"
                 )
 
         # ==================================
-        # OPCIÓN 4: VER CLIENTES
+        # OPCIÓN 4 - VER CLIENTES
         # ==================================
         elif opcion == 4:
 
-            # Validamos si hay clientes
             if not clientes:
 
                 print(
@@ -331,20 +349,17 @@ while True:
 
             else:
 
-                # Recorremos lista de clientes
                 for cliente in clientes:
 
-                    # Mostramos información
                     print(
                         cliente.mostrar_info()
                     )
 
         # ==================================
-        # OPCIÓN 5: VER RESERVAS
+        # OPCIÓN 5 - VER RESERVAS
         # ==================================
         elif opcion == 5:
 
-            # Validamos si hay reservas
             if not reservas:
 
                 print(
@@ -353,30 +368,30 @@ while True:
 
             else:
 
-                # Recorremos lista de reservas
                 for reserva in reservas:
 
-                    # Mostramos información
                     print(
                         reserva.mostrar_info()
                     )
 
         # ==================================
-        # OPCIÓN 6: SALIR
+        # OPCIÓN 6 - SALIR
         # ==================================
         elif opcion == 6:
 
-            # Mensaje de salida
             print(
                 "Saliendo del sistema..."
             )
 
-            # Registro en logs
+            print(
+                f"Operaciones realizadas: "
+                f"{operaciones}"
+            )
+
             registrar_log(
                 "Sistema finalizado"
             )
 
-            # Finalizamos ciclo
             break
 
         # ==================================
@@ -384,22 +399,25 @@ while True:
         # ==================================
         else:
 
-            print("❌ Opción inválida")
+            print(
+                "❌ Opción inválida"
+            )
 
     # ======================================
-    # ERROR GENERAL
+    # MANEJO GLOBAL DE ERRORES
     # ======================================
-    except ValueError:
+    except ValueError as e:
 
-        # Error si el usuario ingresa
-        # un dato no numérico
+        registrar_log(
+            f"Error general: {str(e)}"
+        )
+
         print(
             "❌ Debe ingresar un número válido"
         )
 
     finally:
 
-        # Mensaje final de operación
         print(
             "\n--- Operación finalizada ---"
         )
