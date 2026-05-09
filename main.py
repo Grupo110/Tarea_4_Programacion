@@ -1,3 +1,40 @@
+# Código revisado y modificado por Julio Cesar Salgado Marín
+
+# Comentarios de revisión y mejoras realizadas:
+#
+# 1. Se corrigió la importación del archivo Reservas.py.
+#
+# 2. Se agregó la lista interna de reservas
+# para almacenar las reservas creadas.
+#
+# 3. Se mejoró la integración entre:
+# cliente.py, servicio.py y Reservas.py.
+#
+# 4. Se corrigió la creación del objeto Reserva
+# agregando id, fecha y duración.
+#
+# 5. Se agregaron validaciones para verificar
+# que existan clientes y servicios antes
+# de crear reservas.
+#
+# 6. Se agregó manejo de errores mediante
+# bloques try, except y finally.
+#
+# 7. Se implementó el uso de registrar_log()
+# para registrar eventos y errores del sistema.
+#
+# 8. Se agregó la opción para visualizar
+# las reservas registradas.
+#
+# 9. Se mejoró la organización y documentación
+# interna del código.
+#
+# 10. Se verificó el uso correcto de listas
+# internas para clientes, servicios y reservas.
+#
+# 11. Se fortaleció el funcionamiento general
+# del sistema de reservas.
+
 # ==========================================
 # SISTEMA PRINCIPAL DE RESERVAS
 # ==========================================
