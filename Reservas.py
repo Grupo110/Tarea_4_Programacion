@@ -1,6 +1,12 @@
 # Código original realizado por la compañera Yuliana Cometa
 # Código revisado y modificado por Julio Cesar Salgado Marín
-
+# Comentarios de revisión:
+# 1. Se corrigieron las importaciones de Cliente y Servicio.
+# 2. Se agregó validación para fecha vacía.
+# 3. Se mejoraron comentarios explicativos del código.
+# 4. Se verificó el manejo de excepciones personalizadas.
+# 5. Se revisó la validación de duración de reserva.
+# 6. Se mantuvo el registro de errores en logs.txt.
 import datetime
 
 # Importación de clases necesarias
