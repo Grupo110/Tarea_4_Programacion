@@ -1,76 +1,126 @@
 # Código original realizado por la compañera Yuliana Cometa
 # Código revisado y modificado por Julio Cesar Salgado Marín
-# Comentarios de revisión:
+
+# Comentarios de revisión y mejoras realizadas:
+#
 # 1. Se corrigieron las importaciones de Cliente y Servicio.
-# 2. Se agregó validación para fecha vacía.
-# 3. Se mejoraron comentarios explicativos del código.
-# 4. Se verificó el manejo de excepciones personalizadas.
-# 5. Se revisó la validación de duración de reserva.
-# 6. Se mantuvo el registro de errores en logs.txt.
+#
+# 2. Se agregó la importación de datetime
+# para el registro de logs.
+#
+# 3. Se agregó validación para fecha vacía.
+#
+# 4. Se mejoró la validación de duración
+# de la reserva.
+#
+# 5. Se verificó el manejo de excepciones
+# personalizadas mediante ReservaError.
+#
+# 6. Se mejoró el método mostrar_info()
+# utilizando descripcion() para aplicar
+# mejor polimorfismo.
+#
+# 7. Se agregó la función registrar_log()
+# para registrar eventos del sistema.
+#
+# 8. Se fortaleció la integración con
+# cliente.py, servicio.py y main.py.
+#
+# 9. Se mejoraron los comentarios y la
+# documentación interna del código.
+#
+# 10. Se mantuvo el registro de errores
+# en logs.txt.
+# ==========================================
+# IMPORTACIONES
+# ==========================================
+
+# Importamos datetime para logs
 import datetime
 
-# Importación de clases necesarias
+# Importamos clases necesarias
 from cliente import Cliente
 from servicio import Servicio
 
 
-# Excepción personalizada para manejar errores de reservas
+# ==========================================
+# EXCEPCIÓN PERSONALIZADA
+# ==========================================
+
 class ReservaError(Exception):
     pass
 
 
-# Clase Reserva
+# ==========================================
+# CLASE RESERVA
+# ==========================================
+
 class Reserva:
 
-    def __init__(self, id_reserva, cliente, servicio, fecha, duracion_horas):
+    # Constructor
+    def __init__(
+        self,
+        id_reserva,
+        cliente,
+        servicio,
+        fecha,
+        duracion_horas
+    ):
 
         try:
 
-            # Verificación:
-            # el cliente debe ser una instancia válida de Cliente
+            # Validar cliente
             if not isinstance(cliente, Cliente):
-                raise ReservaError("Cliente inválido")
+                raise ReservaError(
+                    "Cliente inválido"
+                )
 
-            # Verificación:
-            # el servicio debe ser una instancia válida de Servicio
+            # Validar servicio
             if not isinstance(servicio, Servicio):
-                raise ReservaError("Servicio inválido")
+                raise ReservaError(
+                    "Servicio inválido"
+                )
 
-            # Mejora realizada:
-            # validar que la fecha no esté vacía
+            # Validar fecha
             if fecha == "":
-                raise ReservaError("La fecha no puede estar vacía")
+                raise ReservaError(
+                    "La fecha no puede estar vacía"
+                )
 
-            # Mejora realizada:
-            # validar que la duración sea positiva
+            # Validar duración
             if duracion_horas <= 0:
-                raise ReservaError("La duración debe ser mayor a cero")
+                raise ReservaError(
+                    "La duración debe ser mayor a cero"
+                )
 
-            # Asignación de atributos protegidos
+            # Atributos protegidos
             self._id_reserva = id_reserva
             self._cliente = cliente
             self._servicio = servicio
             self._fecha = fecha
             self._duracion_horas = duracion_horas
 
-            # Estado inicial de la reserva
+            # Estado inicial
             self._estado = "pendiente"
 
         except ReservaError as e:
 
-            # Registro del error en archivo log
+            # Guardar error en logs
             self.log_error(e)
 
-            # Relanzar excepción
             raise
 
-    # Método para confirmar reserva
+    # ======================================
+    # CONFIRMAR RESERVA
+    # ======================================
+
     def confirmar(self):
 
         try:
 
-            # Solo se pueden confirmar reservas pendientes
+            # Verificar estado
             if self._estado != "pendiente":
+
                 raise ReservaError(
                     "Solo se pueden confirmar reservas pendientes"
                 )
@@ -78,45 +128,73 @@ class Reserva:
             self._estado = "confirmada"
 
         except ReservaError as e:
+
             self.log_error(e)
+
             raise
 
-    # Método para cancelar reserva
+    # ======================================
+    # CANCELAR RESERVA
+    # ======================================
+
     def cancelar(self):
 
         try:
 
-            # Evitar cancelar una reserva ya cancelada
+            # Verificar cancelación
             if self._estado == "cancelada":
-                raise ReservaError("La reserva ya está cancelada")
+
+                raise ReservaError(
+                    "La reserva ya está cancelada"
+                )
 
             self._estado = "cancelada"
 
         except ReservaError as e:
+
             self.log_error(e)
+
             raise
 
-    # Método para mostrar información de la reserva
-    def mostrar_info(self):
+    # ======================================
+    # MOSTRAR INFORMACIÓN
+    # ======================================
 
-        # Observación:
-        # verificar que Cliente tenga implementado mostrar_info()
+    def mostrar_info(self):
 
         return (
             f"Reserva {self._id_reserva} - "
             f"Cliente: {self._cliente.mostrar_info()}, "
-            f"Servicio: {self._servicio._nombre}, "
+            f"Servicio: {self._servicio.descripcion()}, "
             f"Fecha: {self._fecha}, "
             f"Duración: {self._duracion_horas}h, "
             f"Estado: {self._estado}"
         )
 
-    # Método estático para registrar errores
+    # ======================================
+    # LOGS DE ERRORES
+    # ======================================
+
     @staticmethod
     def log_error(error):
 
-        # Los errores se almacenan en logs.txt
         with open("logs.txt", "a") as f:
+
             f.write(
-                f"[{datetime.datetime.now()}] ERROR: {str(error)}\n"
+                f"[{datetime.datetime.now()}] "
+                f"ERROR: {str(error)}\n"
             )
+
+
+# ==========================================
+# FUNCIÓN PARA REGISTRAR LOGS
+# ==========================================
+
+def registrar_log(mensaje):
+
+    with open("logs.txt", "a") as f:
+
+        f.write(
+            f"[{datetime.datetime.now()}] "
+            f"{mensaje}\n"
+        )
