@@ -1,39 +1,40 @@
-# Código revisado y mejorado por Julio Cesar Salgado Marín
+# =========================================================
+# SISTEMA DE RESERVAS - SOFTWARE FJ
+# Autor: JULIO CESAR SALGADO MARIN
 # Archivo: servicio.py
-# Correcciones y mejoras realizadas en servicio.py
+# =========================================================
 
-# 1. Se convirtió la clase Servicio en una clase abstracta
-# utilizando ABC y abstractmethod.
-
-# 2. Se creó la excepción personalizada ServicioError
-# para mejorar el manejo de errores específicos.
-
-# 3. Se agregaron registros de errores en logs.txt
-# usando manejo de archivos y datetime.
-
-# 4. Se implementó polimorfismo mediante la sobrescritura
-# del método calcular_costo() en las clases hijas.
-
-# 5. Se implementó el método descripcion()
-# en cada servicio especializado.
-
-# 6. Se validaron datos como:
-# nombre, precio, capacidad y especialidad.
-
-# 7. Se agregó sobrecarga de métodos mediante
-# parámetros opcionales en calcular_costo().
-
+# MODIFICACIONES REALIZADAS:
+#
+# 1. Se convirtió la clase Servicio en una
+#    clase abstracta usando ABC.
+#
+# 2. Se implementó polimorfismo mediante
+#    sobrescritura de métodos.
+#
+# 3. Se agregaron validaciones robustas
+#    para nombre, precio y atributos.
+#
+# 4. Se implementó encapsulación mediante
+#    atributos protegidos y getters.
+#
+# 5. Se agregó manejo avanzado de excepciones
+#    y encadenamiento de errores.
+#
+# 6. Se registran errores automáticamente
+#    en logs.txt.
+#
+# 7. Se añadieron parámetros opcionales
+#    para simular sobrecarga de métodos.
+#
 # 8. Se implementaron bloques:
-# try, except, else y finally.
-
-# 9. Se mejoró la documentación y organización del código.
-
-# 10. Se verificó el correcto funcionamiento de:
-# ServicioSala, ServicioEquipo y ServicioAsesoria.
+#    try, except, else y finally.
+#
+# =========================================================
 
 import datetime
 
-# Importamos herramientas para clases abstractas
+# Importamos herramientas abstractas
 from abc import ABC, abstractmethod
 
 
@@ -57,52 +58,72 @@ class Servicio(ABC):
         try:
 
             # Validación del nombre
-            if not nombre:
+            if not nombre.strip():
+
                 raise ServicioError(
                     "El servicio debe tener nombre"
                 )
 
             # Validación del precio
             if precio_base <= 0:
+
                 raise ServicioError(
                     "El precio debe ser mayor a cero"
                 )
 
-            # Atributos protegidos
+            # Encapsulación
             self._nombre = nombre
             self._precio_base = precio_base
 
         except ServicioError as e:
 
-            # Registro de error
+            # Registro del error
             self.log_error(e)
 
-            raise
+            # Encadenamiento de excepción
+            raise ServicioError(
+                "Error al crear el servicio"
+            ) from e
 
-    # Método abstracto obligatorio
+    # ======================================
+    # MÉTODOS ABSTRACTOS
+    # ======================================
+
     @abstractmethod
     def calcular_costo(self):
         pass
 
-    # Método abstracto obligatorio
     @abstractmethod
     def descripcion(self):
         pass
 
-    # Método estático para registrar errores
+    # ======================================
+    # GETTERS
+    # ======================================
+
+    @property
+    def nombre(self):
+        return self._nombre
+
+    @property
+    def precio_base(self):
+        return self._precio_base
+
+    # ======================================
+    # MÉTODO PARA LOGS
+    # ======================================
+
     @staticmethod
     def log_error(error):
 
         try:
 
-            # Abrir archivo en modo agregar
             with open(
                 "logs.txt",
                 "a",
                 encoding="utf-8"
             ) as f:
 
-                # Escribir mensaje de error
                 f.write(
                     f"[{datetime.datetime.now()}] "
                     f"ERROR SERVICIO: "
@@ -112,14 +133,15 @@ class Servicio(ABC):
         except PermissionError:
 
             print(
-                "No se pudo escribir en logs.txt "
-                "porque el archivo está bloqueado."
+                "No se pudo escribir "
+                "en logs.txt"
             )
 
         except Exception as e:
 
             print(
-                "Ocurrió un error al crear el log:",
+                "Error inesperado "
+                "al crear log:",
                 e
             )
 
@@ -145,32 +167,41 @@ class ServicioSala(Servicio):
 
         try:
 
-            # Validación capacidad
+            # Validación
             if capacidad <= 0:
+
                 raise ServicioError(
                     "Capacidad inválida"
                 )
 
-            # Atributo protegido
             self._capacidad = capacidad
 
         except ServicioError as e:
 
             self.log_error(e)
 
-            raise
+            raise ServicioError(
+                "Error en ServicioSala"
+            ) from e
 
     # Polimorfismo
-    def calcular_costo(self, horas=1):
+    def calcular_costo(
+        self,
+        horas=1
+    ):
 
-        return self._precio_base * horas
+        return (
+            self._precio_base * horas
+        )
 
-    # Descripción del servicio
+    # Descripción
     def descripcion(self):
 
         return (
-            f"Servicio Sala: {self._nombre} | "
-            f"Capacidad: {self._capacidad}"
+            f"Servicio Sala: "
+            f"{self._nombre} | "
+            f"Capacidad: "
+            f"{self._capacidad}"
         )
 
 
@@ -187,7 +218,6 @@ class ServicioEquipo(Servicio):
         tipo_equipo
     ):
 
-        # Herencia
         super().__init__(
             nombre,
             precio_base
@@ -195,32 +225,40 @@ class ServicioEquipo(Servicio):
 
         try:
 
-            # Validación tipo equipo
-            if not tipo_equipo:
+            if not tipo_equipo.strip():
+
                 raise ServicioError(
                     "Tipo de equipo requerido"
                 )
 
-            # Atributo protegido
             self._tipo_equipo = tipo_equipo
 
         except ServicioError as e:
 
             self.log_error(e)
 
-            raise
+            raise ServicioError(
+                "Error en ServicioEquipo"
+            ) from e
 
     # Polimorfismo
-    def calcular_costo(self, dias=1):
+    def calcular_costo(
+        self,
+        dias=1
+    ):
 
-        return self._precio_base * dias
+        return (
+            self._precio_base * dias
+        )
 
-    # Descripción del servicio
+    # Descripción
     def descripcion(self):
 
         return (
-            f"Servicio Equipo: {self._nombre} | "
-            f"Tipo: {self._tipo_equipo}"
+            f"Servicio Equipo: "
+            f"{self._nombre} | "
+            f"Tipo: "
+            f"{self._tipo_equipo}"
         )
 
 
@@ -237,7 +275,6 @@ class ServicioAsesoria(Servicio):
         especialidad
     ):
 
-        # Herencia
         super().__init__(
             nombre,
             precio_base
@@ -245,20 +282,21 @@ class ServicioAsesoria(Servicio):
 
         try:
 
-            # Validación especialidad
-            if not especialidad:
+            if not especialidad.strip():
+
                 raise ServicioError(
                     "Especialidad requerida"
                 )
 
-            # Atributo protegido
             self._especialidad = especialidad
 
         except ServicioError as e:
 
             self.log_error(e)
 
-            raise
+            raise ServicioError(
+                "Error en ServicioAsesoria"
+            ) from e
 
     # Sobrecarga mediante parámetros opcionales
     def calcular_costo(
@@ -267,16 +305,18 @@ class ServicioAsesoria(Servicio):
         incluye_material=False
     ):
 
-        # Cálculo básico
-        costo = self._precio_base * horas
+        costo = (
+            self._precio_base * horas
+        )
 
         # Costo adicional
         if incluye_material:
+
             costo += 50
 
         return costo
 
-    # Descripción del servicio
+    # Descripción
     def descripcion(self):
 
         return (
@@ -288,7 +328,7 @@ class ServicioAsesoria(Servicio):
 
 
 # ==========================================
-# PRUEBAS DEL ARCHIVO
+# PRUEBAS DEL SISTEMA
 # ==========================================
 
 if __name__ == "__main__":
@@ -362,7 +402,7 @@ if __name__ == "__main__":
         print()
 
         # ==================================
-        # GENERAR ERROR INTENCIONAL
+        # ERROR INTENCIONAL
         # ==================================
 
         s4 = ServicioSala(

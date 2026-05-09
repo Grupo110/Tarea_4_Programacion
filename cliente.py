@@ -20,8 +20,8 @@
 # 5. Se mejoró el manejo de excepciones
 #    con encadenamiento de errores.
 #
-# 6. Se mantuvo el registro automático
-#    de errores en logs.txt.
+# 6. Se corrigió el manejo del archivo logs.txt
+#    para evitar errores de permisos.
 #
 # 7. Se añadieron comentarios y documentación
 #    para mejorar la comprensión del código.
@@ -65,7 +65,7 @@ class Cliente(Entidad):
                     "El email no es válido"
                 )
 
-            # Encapsulación de atributos
+            # Encapsulación
             self._nombre = nombre
             self._email = email
 
@@ -80,7 +80,7 @@ class Cliente(Entidad):
             ) from e
 
     # =========================================
-    # MÉTODO ABSTRACTO IMPLEMENTADO
+    # IMPLEMENTACIÓN DEL MÉTODO ABSTRACTO
     # =========================================
     def descripcion(self):
 
@@ -90,7 +90,7 @@ class Cliente(Entidad):
         )
 
     # =========================================
-    # MÉTODO PARA MOSTRAR INFORMACIÓN
+    # MOSTRAR INFORMACIÓN
     # =========================================
     def mostrar_info(self):
 
@@ -131,17 +131,36 @@ class Cliente(Entidad):
         self._email = nuevo_email
 
     # =========================================
-    # MÉTODO ESTÁTICO PARA LOGS
+    # MÉTODO PARA REGISTRAR ERRORES
     # =========================================
     @staticmethod
     def log_error(error):
 
-        with open("logs.txt", "a") as f:
+        try:
 
-            f.write(
-                f"[{datetime.datetime.now()}] "
-                f"ERROR CLIENTE: {str(error)}\n"
+            with open(
+                "logs.txt",
+                "a",
+                encoding="utf-8"
+            ) as f:
+
+                f.write(
+                    f"[{datetime.datetime.now()}] "
+                    f"ERROR CLIENTE: "
+                    f"{str(error)}\n"
+                )
+
+        except PermissionError:
+
+            print(
+                "No se pudo escribir en logs.txt "
+                "porque el archivo está abierto "
+                "o bloqueado."
             )
+
+    # =========================================
+    # FIN DE LA CLASE
+    # =========================================
 
 
 # =========================================
